@@ -1,11 +1,11 @@
 ---
 name: handoff-save
-description: Save a handoff checkpoint (HANDOFF.md) so work can continue in another Claude account or chat after a usage limit cuts the session off. Use when the user says "save handoff", "checkpoint", "存檔", "交接", "用量快用完", "準備換帳號", and also PROACTIVELY, without being asked, after every meaningful milestone and whenever the conversation is getting long.
+description: Save a handoff checkpoint (HANDOFF.md) so work can continue in another Claude account, chat, or on the phone after a usage limit cuts the session off. Writes to the local ClaudeHandoff folder or the user's private GitHub repo claude-handoff-data. Use when the user says "save handoff", "checkpoint", "存檔", "交接", "用量快用完", "準備換帳號", and also PROACTIVELY, without being asked, after every meaningful milestone and whenever the conversation is getting long.
 ---
 
 # Handoff Save（交接存檔）
 
-Usage limits cut a session off **without warning**. The last checkpoint is all that survives. So checkpoint **automatically** — never wait to be asked.
+The checkpoint lets work continue in the other account, a new chat, or on the phone. Usage limits cut a session off **without warning**. The last checkpoint is all that survives. So checkpoint **automatically** — never wait to be asked.
 
 ## When to save
 
@@ -18,13 +18,21 @@ Keep it quick: one short line to the user is enough (e.g. `（已存檔交接 HA
 
 ## Where to save
 
-Find the handoff folder in this order:
+Find the handoff location in this order:
 
-1. **A connected folder named `ClaudeHandoff`** (the user adds it with + → "Add folder"; usually `%USERPROFILE%\ClaudeHandoff`). Use whatever file / device tools are available to list connected folders and write files there.
-2. **Claude Code**: if working inside a repo, use `<repo>/.handoff/` (see the CLAUDE.md snippet). Remind the user to gitignore `.handoff/` if the repo is public.
-3. **No file access**: output the full HANDOFF.md in one code block and tell the user (in Traditional Chinese) to save it as `ClaudeHandoff\<project-slug>\HANDOFF.md`.
+1. **A connected local folder named `ClaudeHandoff`** (desktop app: + → "Add folder"; usually `%USERPROFILE%\ClaudeHandoff`). Use whatever file / device tools are available.
+   - If it is a git repo (has `.git/`) and you can run shell commands there: `git pull --rebase --autostash` before reading, and after writing `git add -A && git commit -m "handoff: <project> <time>" && git push`.
+   - Otherwise just write the files; the user's auto-sync task (every 10 min) uploads them.
+2. **Git access to the user's PRIVATE repo `claude-handoff-data`** (e.g. Claude Code on the web / phone with that repo, or a tool that can attach or clone the user's GitHub repos — attach it if such a tool exists). Never create it, and never create it public; if it is missing, tell the user to run `scripts/setup-private-repo.bat` from claude-handoff.
+   - `git pull --rebase` before reading; after each write: `git add -A && git commit -m "handoff: <project> <time>" && git push`.
+   - On push rejection or conflict: `git pull --rebase`, then for `HANDOFF.md` keep the newest version (yours, if you just wrote it); for `LOG.md` keep both sides' lines; continue the rebase and push again.
+3. **Neither** (e.g. web chat without file access): output the full HANDOFF.md in one code block and tell the user (in Traditional Chinese) to save it as `ClaudeHandoff\<project-slug>\HANDOFF.md`.
 
-If the folder cannot be found, say so once and use option 3 — do not silently skip the checkpoint.
+In **Claude Code inside a normal project repo** (not `claude-handoff-data`) you may instead use `<repo>/.handoff/` (see the CLAUDE.md snippet); remind the user to gitignore it if the repo is public.
+
+**Never** write handoff data or shared skills into the public tool repo `claude-handoff`.
+
+If no location can be found, say so once and use option 3 — do not silently skip the checkpoint.
 
 ## What to write
 

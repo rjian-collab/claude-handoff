@@ -38,6 +38,10 @@ claude-handoff/
 ├─ scripts/
 │  ├─ setup-windows.bat     ← 雙擊執行，建立 ClaudeHandoff 資料夾
 │  ├─ setup-windows.ps1     ← 同上（PowerShell 版）
+│  ├─ setup-private-repo.bat← 選用：私人 GitHub 模式（手機也能接續）
+│  ├─ setup-private-repo.ps1← 同上（PowerShell 版）
+│  ├─ sync-handoff.bat      ← 手動同步一次（私人 GitHub 模式）
+│  ├─ remove-auto-sync.bat  ← 移除每 10 分鐘自動同步
 │  ├─ pack-shared-skills.bat← 把共用技能打包成 zip（手動上傳用）
 │  ├─ pack-shared-skills.py ← 同上（Python 程式本體）
 │  └─ build-skills.py       ← 開發者用：重新打包 zip
@@ -176,15 +180,41 @@ ClaudeHandoff\
 
 ---
 
-## 進階（選用）：多台電腦共用
+## 手機 / 電腦關機也能接續：私人 GitHub 模式（選用）
 
-如果你在多台電腦上工作，可以把 `ClaudeHandoff` 資料夾做成**另一個私人（Private）GitHub 專案**，用 GitHub Desktop 同步：
+平常交接檔只存在你的電腦上，所以電腦關機時，手機上的 Claude 讀不到。
+開啟這個模式後，`ClaudeHandoff` 資料夾會同步到**你自己的私人 GitHub 專案** `claude-handoff-data`（只有你看得到），手機或任何能連 GitHub 的 Claude 都能讀寫。多台電腦也能共用。
 
-1. 在 GitHub 建立新專案，**一定要選 Private**。
-2. 用 GitHub Desktop 把 `ClaudeHandoff` 資料夾加入成這個專案。
-3. 換電腦前 Commit + Push，到另一台電腦先 Pull。
+### 設定（在電腦上做一次）
 
-注意：**不要**用這個公開的 claude-handoff 專案存資料。
+1. 先做完上面的「安裝」步驟 1。
+2. 雙擊 `scripts\setup-private-repo.bat`。
+3. 如果缺少 Git 或 GitHub CLI，它會問你要不要自動安裝：按 **Y**。裝好後**關掉視窗，再雙擊一次**。
+4. 第一次會要你登入 GitHub：問題直接按 Enter 用預設值，記下畫面上的**一次性代碼**，瀏覽器打開後登入並輸入代碼。
+5. 它會自動建立**私人**專案 `你的帳號/claude-handoff-data`，並上傳資料夾。
+6. 問你要不要「每 10 分鐘自動同步」時，按 **Y**。
+
+> 自動同步時，可能會短暫閃過黑色視窗，這是正常的。不想要了就雙擊 `scripts\remove-auto-sync.bat`。
+> 同步程式會複製到 `ClaudeHandoff\.tools\`，所以之後就算移動或刪除下載的 claude-handoff 資料夾也沒關係。
+
+### 在手機上接續
+
+1. 手機瀏覽器打開 **claude.ai/code**（或 Claude App 裡的 **Code** 區）。
+2. 選擇專案（repository）**claude-handoff-data**。
+3. 輸入：「**接續 專案名稱**」。
+4. Claude 會讀最新進度、接著做，並把新的存檔推回 GitHub。回到電腦後，自動同步會把它下載下來。
+
+**注意：**
+
+- **兩個 Claude 帳號都要連接 GitHub**（Settings 裡的 GitHub 連接），才看得到這個私人專案。
+- **Team 帳號**：先確認公司/學校允許連接個人 GitHub 帳號，以及允許把資料放到個人 GitHub。
+
+### 誠實說明限制
+
+- 電腦端是**每 10 分鐘**同步一次，所以最多有 10 分鐘的延遲。
+- 如果你在電腦上工作後**10 分鐘內就關機**，最後的存檔可能還沒上傳。**離開電腦前，請雙擊 `ClaudeHandoff\.tools\sync-handoff.bat` 手動同步一次。**
+- 不要同時在電腦和手機上做同一個專案，以免互相覆蓋（萬一衝突，HANDOFF.md 以較新的為準，LOG.md 兩邊都保留）。
+- **絕對不要**用這個公開的 claude-handoff 專案存資料；私人資料只放 `claude-handoff-data`，而且必須是 Private（設定程式發現它是公開的會自動停止）。
 
 ---
 
@@ -215,8 +245,11 @@ A：複製舊對話最後一段，貼到新帳號，加一句「請用 handoff-l
 **Q：交接檔寫錯了？**
 A：用記事本直接改 `HANDOFF.md`，或告訴 Claude 哪裡不對。接續時 Claude 也會先檢查實際檔案，以實際狀態為準。
 
+**Q：能不能自動建 repo？**
+A：可以。`scripts\setup-private-repo.bat` 會用 GitHub CLI（gh）自動幫你建立**私人**專案 `claude-handoff-data`，不用自己到 GitHub 網站操作。
+
 **Q：要怎麼移除？**
-A：在每個帳號的 Skills 設定裡刪除三個技能，再刪掉 `ClaudeHandoff` 資料夾即可。
+A：在每個帳號的 Skills 設定裡刪除三個技能，再刪掉 `ClaudeHandoff` 資料夾即可。有開私人 GitHub 模式的話，先雙擊 `remove-auto-sync.bat`，需要時再到 GitHub 刪除 `claude-handoff-data`。
 
 **Q：我修改了技能，要怎麼重新打包？**
 A：安裝 Python 後執行 `python scripts\build-skills.py`，新的 zip 會出現在 `dist\`。
@@ -232,6 +265,7 @@ A：安裝 Python 後執行 `python scripts\build-skills.py`，新的 zip 會出
 - **Limits:** not real-time sync — only the last checkpoint survives. If cut off before any checkpoint, paste the end of the old chat into the new one with "請用 handoff-load 規則整理並接續".
 - **Privacy:** keep handoff data and shared skills out of this public repo (the `.gitignore` blocks common paths). Never store secrets. On Team accounts, follow your organization's policy; admins may disable skill uploads.
 - **Share your own skills:** the `skill-share` skill exports your custom skills to `ClaudeHandoff/skills/` (with `INDEX.md`) and imports them in the other account (via a skill review card where available; otherwise zip them with `scripts/pack-shared-skills.bat` and upload manually).
+- **Private GitHub mode (optional):** `scripts/setup-private-repo.bat` installs/logs in to `gh`, creates your PRIVATE repo `<you>/claude-handoff-data`, turns `ClaudeHandoff` into a clone of it, and can register a 10-minute auto-sync task (`sync-handoff.bat`; remove with `remove-auto-sync.bat`). Then you can resume from your phone via claude.ai/code with that repo. Limits: up to 10 minutes of sync delay — run `sync-handoff.bat` before shutting down. Both accounts need GitHub connected; Team accounts must follow org policy.
 - **Claude Code:** paste `claude-code/CLAUDE.md.snippet` into your project's `CLAUDE.md` (checkpoints go to `.handoff/`; gitignore it in public repos).
 - Rebuild zips: `python scripts/build-skills.py` (stdlib only).
 
