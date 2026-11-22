@@ -21,6 +21,11 @@ try {
         New-Item -ItemType Directory -Path $HandoffDir | Out-Null
         Write-Host '[OK] 已建立資料夾。' -ForegroundColor Green
     }
+    $SkillsDir = Join-Path $HandoffDir 'skills'
+    if (-not (Test-Path -LiteralPath $SkillsDir)) {
+        New-Item -ItemType Directory -Path $SkillsDir | Out-Null
+    }
+    Write-Host '[OK] 共用技能資料夾 skills 已準備好。' -ForegroundColor Green
 
     $readme = @'
 ClaudeHandoff 交接資料夾
@@ -30,6 +35,7 @@ ClaudeHandoff 交接資料夾
 結構：每個專案一個子資料夾
   專案代號\HANDOFF.md  目前進度（每次存檔會覆蓋）
   專案代號\LOG.md      存檔紀錄（只會往下加）
+  skills\              共用技能（在兩個帳號之間搬技能用）
 
 使用方式：
   1. 在 Claude 桌面版每個新對話，按 + 然後 Add folder，選這個資料夾。
@@ -44,7 +50,7 @@ ClaudeHandoff 交接資料夾
 
     Write-Host ''
     Write-Host '完成！下一步：'
-    Write-Host '  1. 在 Claude 桌面版的「每個帳號」上傳 dist 資料夾裡的兩個 zip 技能檔。'
+    Write-Host '  1. 在 Claude 桌面版的「每個帳號」上傳 dist 資料夾裡的三個 zip 技能檔。'
     Write-Host '  2. 開新對話時，按 + 選 Add folder，連接上面那個 ClaudeHandoff 資料夾。'
     Write-Host ''
     Write-Host '現在幫你打開資料夾...'

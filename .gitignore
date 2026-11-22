@@ -8,6 +8,8 @@ LOG.md
 # ...but keep the empty template
 !templates/HANDOFF.md
 
+_zips/
+
 # Python / OS junk
 __pycache__/
 *.pyc

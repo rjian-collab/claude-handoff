@@ -19,6 +19,9 @@ if exist "%HANDOFF_DIR%\" (
   if errorlevel 1 goto :fail
   echo [OK] 已建立資料夾。
 )
+if not exist "%HANDOFF_DIR%\skills\" mkdir "%HANDOFF_DIR%\skills"
+if errorlevel 1 goto :fail
+echo [OK] 共用技能資料夾 skills 已準備好。
 
 > "%HANDOFF_DIR%\README.txt" (
   echo ClaudeHandoff 交接資料夾
@@ -28,6 +31,7 @@ if exist "%HANDOFF_DIR%\" (
   echo 結構：每個專案一個子資料夾
   echo   專案代號\HANDOFF.md  目前進度（每次存檔會覆蓋）
   echo   專案代號\LOG.md      存檔紀錄（只會往下加）
+  echo   skills\              共用技能（在兩個帳號之間搬技能用）
   echo.
   echo 使用方式：
   echo   1. 在 Claude 桌面版每個新對話，按 + 然後 Add folder，選這個資料夾。
@@ -42,7 +46,7 @@ echo [OK] 已寫入 README.txt 說明檔。
 
 echo.
 echo 完成！下一步：
-echo   1. 在 Claude 桌面版的「每個帳號」上傳 dist 資料夾裡的兩個 zip 技能檔。
+echo   1. 在 Claude 桌面版的「每個帳號」上傳 dist 資料夾裡的三個 zip 技能檔。
 echo   2. 開新對話時，按 + 選 Add folder，連接上面那個 ClaudeHandoff 資料夾。
 echo.
 echo 現在幫你打開資料夾...

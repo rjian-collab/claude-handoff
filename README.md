@@ -33,10 +33,13 @@ Claude 的不同帳號之間**沒有**共用記憶，也**沒有**辦法讀另�
 claude-handoff/
 ├─ dist/
 │  ├─ handoff-save.zip      ← 存檔技能（上傳到 Claude）
-│  └─ handoff-load.zip      ← 接續技能（上傳到 Claude）
+│  ├─ handoff-load.zip      ← 接續技能（上傳到 Claude）
+│  └─ skill-share.zip       ← 共用技能（把自己做的技能搬到另一個帳號）
 ├─ scripts/
 │  ├─ setup-windows.bat     ← 雙擊執行，建立 ClaudeHandoff 資料夾
 │  ├─ setup-windows.ps1     ← 同上（PowerShell 版）
+│  ├─ pack-shared-skills.bat← 把共用技能打包成 zip（手動上傳用）
+│  ├─ pack-shared-skills.py ← 同上（Python 程式本體）
 │  └─ build-skills.py       ← 開發者用：重新打包 zip
 ├─ skills/                  ← 技能原始檔
 ├─ templates/HANDOFF.md     ← 交接檔範本
@@ -58,12 +61,12 @@ claude-handoff/
 3. 如果出現藍色的「Windows 已保護您的電腦」：按「其他資訊」→「仍要執行」。
 4. 看到「完成！」就好了。它會建立：
    `C:\Users\你的使用者名稱\ClaudeHandoff`
-   （裡面有一個 `README.txt` 說明檔）
+   （裡面有一個 `README.txt` 說明檔，和一個放共用技能的 `skills` 資料夾）
 
 > 這個程式只建立資料夾，不安裝任何東西、不上傳任何資料。
 > 想用 PowerShell 版：在 `setup-windows.ps1` 上按右鍵 →「用 PowerShell 執行」。
 
-### 步驟 2：在「每個帳號」上傳兩個技能
+### 步驟 2：在「每個帳號」上傳三個技能
 
 **Team 帳號做一次，個人帳號也要做一次。**
 
@@ -73,8 +76,9 @@ claude-handoff/
    （選單名稱可能隨版本不同，找有「Skills」和「上傳 / Upload」字樣的選項。）
 4. 上傳 `dist\handoff-save.zip`。
 5. 再上傳 `dist\handoff-load.zip`。
-6. 確認兩個技能都是**開啟**狀態。
-7. 左下角切換到另一個帳號，重複 2～6。
+6. 再上傳 `dist\skill-share.zip`。
+7. 確認三個技能都是**開啟**狀態。
+8. 左下角切換到另一個帳號，重複 2～7。
 
 > **Team 帳號注意**：公司/學校的 Team 帳號由管理員控管，管理員可能**關閉了技能上傳**。如果找不到上傳選項，請問管理員。另外請遵守組織的規定：未經允許，不要把公司機密資料存進交接檔（交接檔存在你個人電腦上）。
 
@@ -112,7 +116,7 @@ claude-handoff/
    （不記得名稱就只說「接續」，Claude 會列出最近的專案讓你選。）
 5. Claude 會先用幾行話說明目前進度，檢查檔案狀態，然後直接接著做。
 
-### 資料夾裡長這樣
+### 資料夾裡長這樣（含共用技能）
 
 ```
 ClaudeHandoff\
@@ -120,18 +124,53 @@ ClaudeHandoff\
 ├─ game-dev\
 │  ├─ HANDOFF.md   ← 目前進度（每次存檔覆蓋）
 │  └─ LOG.md       ← 每次存檔的紀錄（往下加）
-└─ thesis-report\
-   ├─ HANDOFF.md
-   └─ LOG.md
+├─ thesis-report\
+│  ├─ HANDOFF.md
+│  └─ LOG.md
+└─ skills\          ← 共用技能（見下一節）
+   ├─ INDEX.md     ← 共用技能清單
+   └─ game-save\
+      └─ SKILL.md
 ```
 
 你可以用記事本打開 `HANDOFF.md` 看 Claude 寫了什麼，也可以自己修改。
 
 ---
 
+## 共用技能
+
+你在一個帳號自己做的技能（例如遊戲開發的「存檔 / 接續」技能），另一個帳號預設是沒有的。`skill-share` 技能可以幫你搬過去。
+
+**在原本的帳號（例如個人帳號）匯出：**
+
+1. 開新對話 → **+** → **Add folder** → 選 `ClaudeHandoff`。
+2. 輸入：
+   ```
+   把 技能名稱 技能共用到另一個帳號
+   ```
+   （要全部搬就說「把我所有自己做的技能共用到另一個帳號」。）
+3. Claude 會把技能複製到 `ClaudeHandoff\skills\技能名稱\`，並更新清單 `INDEX.md`。
+
+**在另一個帳號匯入：**
+
+1. 左下角點名字 → 切換帳號。
+2. 開新對話 → **+** → **Add folder** → 選 `ClaudeHandoff`。
+3. 輸入：
+   ```
+   匯入共用技能
+   ```
+4. Claude 會列出可以匯入的技能，選好之後，對話裡會出現技能的確認卡片，按 **儲存（Save）** 就完成了。
+
+**如果沒有出現確認卡片：** 請 Claude 幫你打包成 zip，或自己雙擊 `scripts\pack-shared-skills.bat`（需要安裝 Python；沒有 Python 的話，它會教你用右鍵「壓縮成 ZIP 檔」手動打包）。zip 檔會出現在 `ClaudeHandoff\skills\_zips\`，再到 Settings 的 Skills 頁面上傳即可。
+
+> 只能搬**你自己做的**技能，內建技能不需要也不會搬。
+> 從 **Team 帳號**匯出前，Claude 會提醒你：技能裡如果有公司機密內容，要先確認公司允許。
+
+---
+
 ## 隱私與安全（很重要）
 
-- **這個工具的 GitHub 專案是公開的，但你的交接資料絕對不要放進來。** 交接資料只存在你電腦上的 `ClaudeHandoff` 資料夾。
+- **這個工具的 GitHub 專案是公開的，但你的交接資料和共用技能絕對不要放進來。** 它們只存在你電腦上的 `ClaudeHandoff` 資料夾。
 - 本專案的 `.gitignore` 已經擋掉 `ClaudeHandoff/`、`.handoff/`、`HANDOFF.md`、`LOG.md`，避免不小心上傳，但請不要依賴它，**不要把資料夾放進這個專案裡**。
 - 技能會要求 Claude **不寫入**密碼、API 金鑰、token。你自己也不要在對話中貼這些東西。
 
@@ -177,7 +216,7 @@ A：複製舊對話最後一段，貼到新帳號，加一句「請用 handoff-l
 A：用記事本直接改 `HANDOFF.md`，或告訴 Claude 哪裡不對。接續時 Claude 也會先檢查實際檔案，以實際狀態為準。
 
 **Q：要怎麼移除？**
-A：在每個帳號的 Skills 設定裡刪除兩個技能，再刪掉 `ClaudeHandoff` 資料夾即可。
+A：在每個帳號的 Skills 設定裡刪除三個技能，再刪掉 `ClaudeHandoff` 資料夾即可。
 
 **Q：我修改了技能，要怎麼重新打包？**
 A：安裝 Python 後執行 `python scripts\build-skills.py`，新的 zip 會出現在 `dist\`。
@@ -188,10 +227,11 @@ A：安裝 Python 後執行 `python scripts\build-skills.py`，新的 zip 會出
 
 **claude-handoff** lets you continue the same work across two Claude accounts (e.g. Team and Personal) after one hits its usage limit. There is no API to share memory or chats between accounts, so two Claude Skills make Claude write a checkpoint file (`HANDOFF.md`, plus an append-only `LOG.md`) to a local folder both accounts can reach through the desktop app's **Add folder**.
 
-- **Install:** run `scripts/setup-windows.bat` (creates `%USERPROFILE%\ClaudeHandoff`); in **each** account upload `dist/handoff-save.zip` and `dist/handoff-load.zip` under Settings → Capabilities/Skills (labels may vary); connect the folder in each new chat via **+ → Add folder**.
+- **Install:** run `scripts/setup-windows.bat` (creates `%USERPROFILE%\ClaudeHandoff`); in **each** account upload `dist/handoff-save.zip`, `dist/handoff-load.zip` and `dist/skill-share.zip` under Settings → Capabilities/Skills (labels may vary); connect the folder in each new chat via **+ → Add folder**.
 - **Use:** Claude checkpoints automatically at milestones. When cut off, switch accounts, open a new chat, connect the folder, and say "resume <project>" / 「接續 <專案名>」.
 - **Limits:** not real-time sync — only the last checkpoint survives. If cut off before any checkpoint, paste the end of the old chat into the new one with "請用 handoff-load 規則整理並接續".
-- **Privacy:** keep handoff data out of this public repo (the `.gitignore` blocks common paths). Never store secrets. On Team accounts, follow your organization's policy; admins may disable skill uploads.
+- **Privacy:** keep handoff data and shared skills out of this public repo (the `.gitignore` blocks common paths). Never store secrets. On Team accounts, follow your organization's policy; admins may disable skill uploads.
+- **Share your own skills:** the `skill-share` skill exports your custom skills to `ClaudeHandoff/skills/` (with `INDEX.md`) and imports them in the other account (via a skill review card where available; otherwise zip them with `scripts/pack-shared-skills.bat` and upload manually).
 - **Claude Code:** paste `claude-code/CLAUDE.md.snippet` into your project's `CLAUDE.md` (checkpoints go to `.handoff/`; gitignore it in public repos).
 - Rebuild zips: `python scripts/build-skills.py` (stdlib only).
 
