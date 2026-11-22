@@ -1,0 +1,11 @@
+## Handoff checkpoints（交接存檔）
+
+Usage limits can end this session without warning, and work may continue in another Claude account.
+
+- Maintain `.handoff/HANDOFF.md` as the current state of the work. Overwrite it AUTOMATICALLY after every meaningful milestone and whenever the conversation gets long; never wait to be asked.
+- Sections: 專案 Project, 目標 Goal, 目前狀態 Status, 已完成 Done, 進行中 In progress (exact file/step/last command), 下一步 Next steps (numbered, concrete), 關鍵決定與原因 Decisions, 檔案與位置 Files, 記憶快照 Memory snapshot (user prefs/facts), 待解問題 Open questions, 最後更新 Last updated (time + account Team/Personal). Keep it under ~150 lines.
+- Append one dated line per checkpoint to `.handoff/LOG.md`.
+- Never write passwords, API keys or tokens. On a company account, leave out confidential data unless the user confirms it is allowed.
+- When the user says「接續」/ "resume": read `.handoff/HANDOFF.md` and the tail of `.handoff/LOG.md`, restate where things stand in 3–5 lines, verify the listed files really are in the stated state, then continue the next step.
+
+<!-- If this repo is public, add `.handoff/` to .gitignore. -->

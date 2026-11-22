@@ -1,0 +1,18 @@
+# Never commit personal handoff data to this public tool repo.
+ClaudeHandoff/
+.handoff/
+handoff-data/
+data/
+HANDOFF.md
+LOG.md
+# ...but keep the empty template
+!templates/HANDOFF.md
+
+# Python / OS junk
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# dist/ is intentionally committed (prebuilt skill zips for beginners).

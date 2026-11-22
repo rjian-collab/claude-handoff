@@ -1,0 +1,4 @@
+# Keep Windows scripts byte-for-byte (CRLF, UTF-8/BOM) in every checkout and ZIP download
+*.bat -text
+*.ps1 -text
+*.zip binary
