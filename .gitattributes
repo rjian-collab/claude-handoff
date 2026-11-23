@@ -2,3 +2,4 @@
 *.bat -text
 *.ps1 -text
 *.zip binary
+*.sh text eol=lf

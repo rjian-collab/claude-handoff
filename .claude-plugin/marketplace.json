@@ -1,0 +1,14 @@
+{
+  "name": "rjian-plugins",
+  "description": "rjian-collab 的 Claude Code 外掛市集",
+  "owner": {
+    "name": "rjian-collab"
+  },
+  "plugins": [
+    {
+      "name": "zh-tw-helper",
+      "source": "./plugins/zh-tw-helper",
+      "description": "台灣繁體中文潤稿、錯誤訊息解說（Windows 友善）、台灣用語寫作規範與簡體字提醒 hook"
+    }
+  ]
+}

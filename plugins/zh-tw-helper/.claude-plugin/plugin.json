@@ -1,0 +1,11 @@
+{
+  "name": "zh-tw-helper",
+  "version": "0.1.0",
+  "description": "台灣繁體中文寫作與除錯小幫手：潤稿指令、錯誤訊息解說指令、台灣用語寫作技能，以及偵測簡體字的提醒 hook。",
+  "author": {
+    "name": "rjian-collab"
+  },
+  "repository": "https://github.com/rjian-collab/claude-handoff",
+  "license": "MIT",
+  "keywords": ["zh-TW", "traditional-chinese", "taiwan", "proofreading", "windows", "beginner"]
+}
